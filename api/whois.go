@@ -7,9 +7,13 @@ import (
 	"github.com/likexian/whois"
 )
 
-func Handler(w http.ResponseWriter, r *http.Request) {
-	// Hardcoded domain for testing
-	domain := "google.com"
+func WhoisHandler(w http.ResponseWriter, r *http.Request) {
+	domain := r.URL.Query().Get("domain")
+	if domain == "" {
+		w.WriteHeader(http.StatusBadRequest)
+		fmt.Fprintf(w, "Error: domain parameter is required")
+		return
+	}
 
 	result, err := whois.Whois(domain)
 	if err != nil {
